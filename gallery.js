@@ -209,7 +209,10 @@ function renderGallery(imageUrls, isInternalReorder = false) {
     const img = document.createElement('img');
     img.src = imageUrls[i];
     img.className = 'image-item';
-    img.style.width = '212.91px';
+
+    // Base Width with Scale
+    const baseWidth = 212.91 * window.galleryParams.imageScale;
+    img.style.width = baseWidth + 'px';
     img.style.height = 'auto';
     img.style.opacity = '0';
     img.style.transition = 'opacity 0.3s ease-in';
@@ -227,8 +230,9 @@ function renderGallery(imageUrls, isInternalReorder = false) {
 
     img.onload = function () {
       if (this.naturalWidth > this.naturalHeight) {
-        // Landscape: Increase size by 10%
-        this.style.width = (212.91 * 1.1) + 'px';
+        // Landscape: Increase size by 30% relative to current scale
+        const currentScale = window.galleryParams.imageScale;
+        this.style.width = (212.91 * currentScale * 1.3) + 'px';
       }
     };
 
@@ -276,8 +280,6 @@ function renderGallery(imageUrls, isInternalReorder = false) {
     obj.rotation.y = theta;
     gridGroup.add(obj);
   }
-
-
 }
 
 // Initial Random Images
@@ -320,7 +322,21 @@ import('https://cdn.jsdelivr.net/npm/lil-gui@0.19/+esm').then(({ default: GUI })
   sphereFolder.add(window.galleryParams, 'sphereCenterZ', -5000, 0).name('Center Z').onChange((v) => {
     mainGroup.position.z = v;
   });
-  sphereFolder.add(window.galleryParams, 'imageScale', 1.18, 3.0).name('Image Scale');
+
+  // FIXED: Image Scale with onChange handler
+  sphereFolder.add(window.galleryParams, 'imageScale', 1.18, 3.0).name('Image Scale').onChange((v) => {
+    // Update all existing images
+    sphereGroup.children.forEach(obj => {
+      if (obj.element && obj.element.tagName === 'IMG') {
+        let multiplier = 1.0;
+        if (obj.element.naturalWidth > obj.element.naturalHeight) {
+          multiplier = 1.3;
+        }
+        obj.element.style.width = (212.91 * v * multiplier) + 'px';
+      }
+    });
+  });
+
   sphereFolder.add(window.galleryParams, 'cameraZ', 0, 2500).name('Camera Zoom').listen().onChange((v) => {
     gsap.to(camera.position, { z: v, duration: window.galleryParams.cameraZoomSpeed, ease: "power2.out", overwrite: true });
   });
