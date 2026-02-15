@@ -9,9 +9,9 @@ window.galleryParams = {
   autoRotateX: true,
   autoRotateY: true,
   autoRotateSpeed: 0.209,
-  imageScale: 1.1,
+  imageScale: 1.18,
   cameraZ: 1000,
-  cameraZoomSpeed: 1.73,
+  cameraZoomSpeed: 1.65,
   areaWidth: 1.0,
   areaHeight: 1.0,
   cameraFov: 50,
@@ -320,11 +320,11 @@ import('https://cdn.jsdelivr.net/npm/lil-gui@0.19/+esm').then(({ default: GUI })
   sphereFolder.add(window.galleryParams, 'sphereCenterZ', -5000, 0).name('Center Z').onChange((v) => {
     mainGroup.position.z = v;
   });
-  sphereFolder.add(window.galleryParams, 'imageScale', 1.1, 3.0).name('Image Scale');
+  sphereFolder.add(window.galleryParams, 'imageScale', 1.18, 3.0).name('Image Scale');
   sphereFolder.add(window.galleryParams, 'cameraZ', 0, 2500).name('Camera Zoom').listen().onChange((v) => {
     gsap.to(camera.position, { z: v, duration: window.galleryParams.cameraZoomSpeed, ease: "power2.out", overwrite: true });
   });
-  sphereFolder.add(window.galleryParams, 'cameraZoomSpeed', 1.73, 5.0).name('Cam Zoom Speed');
+  sphereFolder.add(window.galleryParams, 'cameraZoomSpeed', 1.65, 5.0).name('Cam Zoom Speed');
   sphereFolder.add(window.galleryParams, 'cameraFov', 10, 120).name('Field of View').listen().onChange((v) => {
     camera.fov = v;
     camera.updateProjectionMatrix();
